@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+
+public abstract class OrganizationComponent
+{
+    public string Name { get; set; }
+    public abstract void Display(int indent = 0);
+    public abstract double GetBudget();
+    public abstract int GetEmployeeCount();
+}
+
+public class Employee : OrganizationComponent
+{
+    public string Position { get; set; }
+    public double Salary { get; set; }
+
+    public Employee(string name, string position, double salary)
+    {
+        Name = name;
+        Position = position;
+        Salary = salary;
+    }
+
+    public override void Display(int indent = 0)
+    {
+        Console.WriteLine($"{new string(' ', indent)}{Name} - {Position}");
+    }
+
+    public override double GetBudget()
+    {
+        return Salary;
+    }
+
+    public override int GetEmployeeCount()
+    {
+        return 1;
+    }
+}
+
+public class Department : OrganizationComponent
+{
+    private List<OrganizationComponent> _components = new List<OrganizationComponent>();
+
+    public Department(string name)
+    {
+        Name = name;
+    }
+
+    public void Add(OrganizationComponent component)
+    {
+        _components.Add(component);
+    }
+
+    public void Remove(OrganizationComponent component)
+    {
+        _components.Remove(component);
+    }
+
+    public override void Display(int indent = 0)
+    {
+        Console.WriteLine($"{new string(' ', indent)}{Name} (Department)");
+        foreach (var component in _components)
+        {
+            component.Display(indent + 2);
+        }
+    }
+
+    public override double GetBudget()
+    {
+        double totalBudget = 0;
+        foreach (var component in _components)
+        {
+            totalBudget += component.GetBudget();
+        }
+        return totalBudget;
+    }
+
+    public override int GetEmployeeCount()
+    {
+        int totalEmployees = 0;
+        foreach (var component in _components)
+        {
+            totalEmployees += component.GetEmployeeCount();
+        }
+        return totalEmployees;
+    }
+}
+
+public class Client
+{
+    public static void Main(string[] args)
+    {
+        var salesDepartment = new Department("Sales Department");
+        var marketingDepartment = new Department("Marketing Department");
+
+        var employee1 = new Employee("John Doe", "Sales Manager", 60000);
+        var employee2 = new Employee("Jane Smith", "Marketing Specialist", 50000);
+        var employee3 = new Employee("Paul Brown", "Sales Executive", 45000);
+
+        salesDepartment.Add(employee1);
+        marketingDepartment.Add(employee2);
+        salesDepartment.Add(employee3);
+
+        var company = new Department("Company");
+        company.Add(salesDepartment);
+        company.Add(marketingDepartment);
+
+        company.Display();
+        Console.WriteLine($"\nTotal Budget: {company.GetBudget()}");
+        Console.WriteLine($"Total Employees: {company.GetEmployeeCount()}");
+    }
+}
