@@ -1,0 +1,73 @@
+using System;
+
+public class RoomBookingSystem
+{
+    public void BookRoom() => Console.WriteLine("Room booked.");
+    public void CheckAvailability() => Console.WriteLine("Checked room availability.");
+    public void CancelBooking() => Console.WriteLine("Room booking cancelled.");
+}
+
+public class RestaurantSystem
+{
+    public void ReserveTable() => Console.WriteLine("Table reserved.");
+    public void OrderFood() => Console.WriteLine("Food ordered.");
+}
+
+public class EventManagementSystem
+{
+    public void BookConferenceRoom() => Console.WriteLine("Conference room booked.");
+    public void OrderEquipment() => Console.WriteLine("Equipment ordered for event.");
+}
+
+public class CleaningService
+{
+    public void ScheduleCleaning() => Console.WriteLine("Cleaning scheduled.");
+    public void PerformCleaning() => Console.WriteLine("Cleaning performed.");
+}
+
+public class HotelFacade
+{
+    private RoomBookingSystem _roomBookingSystem;
+    private RestaurantSystem _restaurantSystem;
+    private EventManagementSystem _eventManagementSystem;
+    private CleaningService _cleaningService;
+
+    public HotelFacade()
+    {
+        _roomBookingSystem = new RoomBookingSystem();
+        _restaurantSystem = new RestaurantSystem();
+        _eventManagementSystem = new EventManagementSystem();
+        _cleaningService = new CleaningService();
+    }
+
+    public void BookRoomWithService()
+    {
+        _roomBookingSystem.BookRoom();
+        _restaurantSystem.OrderFood();
+        _cleaningService.ScheduleCleaning();
+    }
+
+    public void OrganizeEventWithBooking()
+    {
+        _eventManagementSystem.BookConferenceRoom();
+        _roomBookingSystem.BookRoom();
+        _eventManagementSystem.OrderEquipment();
+    }
+
+    public void BookTableWithTaxi()
+    {
+        _restaurantSystem.ReserveTable();
+        Console.WriteLine("Taxi ordered.");
+    }
+}
+
+public class Client
+{
+    public static void Main(string[] args)
+    {
+        HotelFacade hotelFacade = new HotelFacade();
+        hotelFacade.BookRoomWithService();
+        hotelFacade.OrganizeEventWithBooking();
+        hotelFacade.BookTableWithTaxi();
+    }
+}
